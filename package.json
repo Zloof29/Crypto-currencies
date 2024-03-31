@@ -4,6 +4,7 @@
     "@types/jquery": "^3.5.29"
   },
   "dependencies": {
+    "@types/canvasjs": "^1.9.11",
     "bootstrap": "^5.3.3",
     "canvasjs": "^1.8.3",
     "jquery": "^3.7.1"
