@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "@types/bootstrap": "^5.2.10",
+    "@types/jquery": "^3.5.29"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.3",
+    "canvasjs": "^1.8.3",
+    "jquery": "^3.7.1"
+  }
+}
