@@ -294,6 +294,7 @@ function saveToggleStateInLocalStorage(
 
   if (toggleInput.checked) {
     handleToggleChecked(toggleInput, coin, arrayOfCoins, toggleArray);
+    toggleCoinDataFetch();
   } else {
     handleToggleUnchecked(coin, arrayOfCoins, toggleArray);
   }
@@ -474,16 +475,11 @@ async function collapseButton(
     `#collapseExampleButton${index}`
   ) as HTMLButtonElement;
 
-  let lastFetchTimes: number[] = [];
-  const lastFetchTimesFromStorage = localStorage.getItem("lastFetchTimes");
-  if (
-    lastFetchTimesFromStorage &&
-    lastFetchTimesFromStorage.startsWith("[") &&
-    lastFetchTimesFromStorage.endsWith("]")
-  ) {
-    lastFetchTimes = JSON.parse(lastFetchTimesFromStorage);
-  }
+  let lastFetchTimes: number[] = JSON.parse(
+    localStorage.getItem("lastFetchTimes") || "[]"
+  );
 
+  // const lastFetchTimesFromStorage = localStorage.getItem("lastFetchTimes");
   const currentTime: number = Date.now();
   const twoMinutesInMilliseconds: number = 2 * 60 * 1000;
 
@@ -603,6 +599,7 @@ function handleresetSearch(
   arrayOfCoins: CryptoCoins[],
   searchInput: HTMLInputElement
 ): void {
+  const home = document.querySelector(`#home`) as HTMLButtonElement;
   const cardRow = document.querySelector(`#card`) as HTMLDivElement;
 
   cardRow.innerHTML = ``;
@@ -667,3 +664,28 @@ function handleSaveChangesButton(
 
   updateToggleStatesOnLoad(arrayOfCoins);
 }
+
+const liveReports = document.querySelector(`#liveReports`) as HTMLButtonElement;
+const aboutDiv = document.querySelector(`#aboutDivt`) as HTMLDivElement;
+const home = document.querySelector(`#home`) as HTMLButtonElement;
+const hideCoins = document.querySelector(`#hideCoins`) as HTMLDivElement;
+const hideChart = document.querySelector(`#hideChart`) as HTMLDivElement;
+const about = document.querySelector(`#about`) as HTMLButtonElement;
+
+liveReports.addEventListener(`click`, function () {
+  hideCoins.setAttribute(`hidden`, `true`);
+  aboutDiv.setAttribute(`hidden`, `true`);
+  hideChart.removeAttribute(`hidden`);
+});
+
+home.addEventListener(`click`, function () {
+  hideCoins.removeAttribute(`hidden`);
+  hideChart.setAttribute(`hidden`, `true`);
+  aboutDiv.setAttribute(`hidden`, `true`);
+});
+
+about.addEventListener(`click`, function () {
+  aboutDiv.removeAttribute(`hidden`);
+  hideCoins.setAttribute(`hidden`, `true`);
+  hideChart.setAttribute(`hidden`, `true`);
+});

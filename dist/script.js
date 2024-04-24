@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 class CryptoCoinsInfo {
     constructor(id, symbol, image, market_data) {
         this.image = image;
@@ -23,34 +14,30 @@ class CryptoCoins {
         this.symbol = symbol;
     }
 }
-(function () {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const response = yield fetch(`https://api.coingecko.com/api/v3/coins/list`);
-            const coinData = yield response.json();
-            display100Coins(coinData);
-        }
-        catch (error) {
-            console.error(`Error: ${error}`);
-            throw error;
-        }
-    });
+(async function () {
+    try {
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/list`);
+        const coinData = await response.json();
+        display100Coins(coinData);
+    }
+    catch (error) {
+        console.error(`Error: ${error}`);
+        throw error;
+    }
 })();
-function getInfoFromApiById(id) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const response = yield fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
-            const idCoinData = yield response.json();
-            if (!isDataAlreadySaved(idCoinData)) {
-                saveInlocalStorage(idCoinData);
-            }
-            return idCoinData;
+async function getInfoFromApiById(id) {
+    try {
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/${id}`);
+        const idCoinData = await response.json();
+        if (!isDataAlreadySaved(idCoinData)) {
+            saveInlocalStorage(idCoinData);
         }
-        catch (error) {
-            console.error("Error fetching data:", error);
-            throw error;
-        }
-    });
+        return idCoinData;
+    }
+    catch (error) {
+        console.error("Error fetching data:", error);
+        throw error;
+    }
 }
 function isDataAlreadySaved(idCoinData) {
     const coinDataArray = JSON.parse(localStorage.getItem(`coinDataArray`) || "[]");
@@ -125,39 +112,31 @@ function createCardInHtml(arrayOfCoins) {
         setupCardEvents(elements, coin, index, arrayOfCoins);
     });
 }
-function addSpinnerToContainer(index) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const spinner = createSpinnerForCollapse();
-        const infoContainer = document.querySelector(`#collapseExampleContent${index}`);
-        infoContainer.appendChild(spinner);
-        return spinner;
-    });
+async function addSpinnerToContainer(index) {
+    const spinner = createSpinnerForCollapse();
+    const infoContainer = document.querySelector(`#collapseExampleContent${index}`);
+    infoContainer.appendChild(spinner);
+    return spinner;
 }
 function removeSpinnerFromContainer(spinner) {
     spinner.remove();
 }
-function fetchCoinData(coinId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const idCoinData = yield getInfoFromApiById(coinId);
-        return idCoinData;
-    });
+async function fetchCoinData(coinId) {
+    const idCoinData = await getInfoFromApiById(coinId);
+    return idCoinData;
 }
-function moreInfoButtonWithEventListener(index, coin, moreInfoButton) {
-    return __awaiter(this, void 0, void 0, function* () {
-        moreInfoButton.addEventListener(`click`, function () {
-            return __awaiter(this, void 0, void 0, function* () {
-                try {
-                    const spinner = yield addSpinnerToContainer(index);
-                    const idCoinData = yield fetchCoinData(coin.id);
-                    removeSpinnerFromContainer(spinner);
-                    collapseButton(idCoinData, index);
-                }
-                catch (error) {
-                    console.error(`Error: ${error}`);
-                    throw error;
-                }
-            });
-        });
+async function moreInfoButtonWithEventListener(index, coin, moreInfoButton) {
+    moreInfoButton.addEventListener(`click`, async function () {
+        try {
+            const spinner = await addSpinnerToContainer(index);
+            const idCoinData = await fetchCoinData(coin.id);
+            removeSpinnerFromContainer(spinner);
+            collapseButton(idCoinData, index);
+        }
+        catch (error) {
+            console.error(`Error: ${error}`);
+            throw error;
+        }
     });
 }
 function createCard() {
@@ -208,6 +187,7 @@ function saveToggleStateInLocalStorage(toggleInput, coin, arrayOfCoins) {
     let toggleArray = getToggleArrayFromLocalStorage();
     if (toggleInput.checked) {
         handleToggleChecked(toggleInput, coin, arrayOfCoins, toggleArray);
+        toggleCoinDataFetch();
     }
     else {
         handleToggleUnchecked(coin, arrayOfCoins, toggleArray);
@@ -279,33 +259,29 @@ function createMoreInfoButton(index) {
     moreInfoButton.textContent = `More info`;
     return moreInfoButton;
 }
-function fetchData(idCoinData, index) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const response = yield fetch(`https://api.coingecko.com/api/v3/coins/${idCoinData.id}`);
-        const data = yield response.json();
-        let lastFetchTimes = JSON.parse(localStorage.getItem(`lastFetchTimes`) || "[]");
-        lastFetchTimes[index] = Date.now();
-        localStorage.setItem(`lastFetchTimes`, JSON.stringify(lastFetchTimes));
-        return data;
-    });
+async function fetchData(idCoinData, index) {
+    const response = await fetch(`https://api.coingecko.com/api/v3/coins/${idCoinData.id}`);
+    const data = await response.json();
+    let lastFetchTimes = JSON.parse(localStorage.getItem(`lastFetchTimes`) || "[]");
+    lastFetchTimes[index] = Date.now();
+    localStorage.setItem(`lastFetchTimes`, JSON.stringify(lastFetchTimes));
+    return data;
 }
-function updateUI(idCoinData, infoContainer, moreInfoButton) {
-    return __awaiter(this, void 0, void 0, function* () {
-        infoContainer.innerHTML = "";
-        if (infoContainer.style.display === "none" ||
-            infoContainer.style.display === "") {
-            infoContainer.style.display = "block";
-            const divTitle = createDivCollapseTitle(idCoinData);
-            const priceInfo = createPriceInfo(idCoinData);
-            infoContainer.appendChild(divTitle);
-            infoContainer.appendChild(yield priceInfo);
-            moreInfoButton.textContent = "Less info";
-        }
-        else {
-            infoContainer.style.display = "none";
-            moreInfoButton.textContent = "More info";
-        }
-    });
+async function updateUI(idCoinData, infoContainer, moreInfoButton) {
+    infoContainer.innerHTML = "";
+    if (infoContainer.style.display === "none" ||
+        infoContainer.style.display === "") {
+        infoContainer.style.display = "block";
+        const divTitle = createDivCollapseTitle(idCoinData);
+        const priceInfo = createPriceInfo(idCoinData);
+        infoContainer.appendChild(divTitle);
+        infoContainer.appendChild(await priceInfo);
+        moreInfoButton.textContent = "Less info";
+    }
+    else {
+        infoContainer.style.display = "none";
+        moreInfoButton.textContent = "More info";
+    }
 }
 function toggleVisibility(infoContainer, moreInfoButton) {
     if (infoContainer.style.display === "none" ||
@@ -318,30 +294,23 @@ function toggleVisibility(infoContainer, moreInfoButton) {
         moreInfoButton.textContent = "More info";
     }
 }
-function collapseButton(idCoinData, index) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const infoContainer = document.querySelector(`#collapseExampleContent${index}`);
-        const moreInfoButton = document.querySelector(`#collapseExampleButton${index}`);
-        let lastFetchTimes = [];
-        const lastFetchTimesFromStorage = localStorage.getItem("lastFetchTimes");
-        if (lastFetchTimesFromStorage &&
-            lastFetchTimesFromStorage.startsWith("[") &&
-            lastFetchTimesFromStorage.endsWith("]")) {
-            lastFetchTimes = JSON.parse(lastFetchTimesFromStorage);
-        }
-        const currentTime = Date.now();
-        const twoMinutesInMilliseconds = 2 * 60 * 1000;
-        if (lastFetchTimes.length <= index ||
-            lastFetchTimes[index] === null ||
-            (typeof lastFetchTimes[index] === "number" &&
-                currentTime - lastFetchTimes[index] > twoMinutesInMilliseconds)) {
-            idCoinData = yield fetchData(idCoinData, index);
-            updateUI(idCoinData, infoContainer, moreInfoButton);
-        }
-        else {
-            toggleVisibility(infoContainer, moreInfoButton);
-        }
-    });
+async function collapseButton(idCoinData, index) {
+    const infoContainer = document.querySelector(`#collapseExampleContent${index}`);
+    const moreInfoButton = document.querySelector(`#collapseExampleButton${index}`);
+    let lastFetchTimes = JSON.parse(localStorage.getItem("lastFetchTimes") || "[]");
+    // const lastFetchTimesFromStorage = localStorage.getItem("lastFetchTimes");
+    const currentTime = Date.now();
+    const twoMinutesInMilliseconds = 2 * 60 * 1000;
+    if (lastFetchTimes.length <= index ||
+        lastFetchTimes[index] === null ||
+        (typeof lastFetchTimes[index] === "number" &&
+            currentTime - lastFetchTimes[index] > twoMinutesInMilliseconds)) {
+        idCoinData = await fetchData(idCoinData, index);
+        updateUI(idCoinData, infoContainer, moreInfoButton);
+    }
+    else {
+        toggleVisibility(infoContainer, moreInfoButton);
+    }
 }
 function createDivCollapseCard() {
     const divCollapseCard = document.createElement(`div`);
@@ -357,34 +326,30 @@ function createDivCollapseTitle(idCoinData) {
     divTitle.appendChild(image);
     return divTitle;
 }
-function createPriceInfo(idCoinData) {
-    return __awaiter(this, void 0, void 0, function* () {
-        const priceInfo = document.createElement(`p`);
-        priceInfo.classList.add(`card-text`, `text-center`, `fs-5`, `fw-bold`);
-        try {
-            const updatedData = yield getInfoFromApiById(idCoinData.id);
-            priceInfo.innerHTML = `USD: ${updatedData.market_data.current_price.usd} $<br> EUR: ${updatedData.market_data.current_price.eur} €<br> ILS: ${updatedData.market_data.current_price.ils} ₪`;
-        }
-        catch (error) {
-            console.error(`${new Date().toISOString()} - Failed to fetch data:`, error);
-        }
-        updatePriceInfo(idCoinData, priceInfo);
-        return priceInfo;
-    });
+async function createPriceInfo(idCoinData) {
+    const priceInfo = document.createElement(`p`);
+    priceInfo.classList.add(`card-text`, `text-center`, `fs-5`, `fw-bold`);
+    try {
+        const updatedData = await getInfoFromApiById(idCoinData.id);
+        priceInfo.innerHTML = `USD: ${updatedData.market_data.current_price.usd} $<br> EUR: ${updatedData.market_data.current_price.eur} €<br> ILS: ${updatedData.market_data.current_price.ils} ₪`;
+    }
+    catch (error) {
+        console.error(`${new Date().toISOString()} - Failed to fetch data:`, error);
+    }
+    updatePriceInfo(idCoinData, priceInfo);
+    return priceInfo;
 }
-function updatePriceInfo(idCoinData, priceInfo) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const updatedData = yield getInfoFromApiById(idCoinData.id);
-            priceInfo.innerHTML = `USD: ${updatedData.market_data.current_price.usd} $<br> EUR: ${updatedData.market_data.current_price.eur} €<br> ILS: ${updatedData.market_data.current_price.ils} ₪`;
-        }
-        catch (error) {
-            console.error(`${new Date().toISOString()} - Failed to fetch data:`, error);
-        }
-        setTimeout(() => __awaiter(this, void 0, void 0, function* () {
-            yield createPriceInfo(idCoinData);
-        }), 120000);
-    });
+async function updatePriceInfo(idCoinData, priceInfo) {
+    try {
+        const updatedData = await getInfoFromApiById(idCoinData.id);
+        priceInfo.innerHTML = `USD: ${updatedData.market_data.current_price.usd} $<br> EUR: ${updatedData.market_data.current_price.eur} €<br> ILS: ${updatedData.market_data.current_price.ils} ₪`;
+    }
+    catch (error) {
+        console.error(`${new Date().toISOString()} - Failed to fetch data:`, error);
+    }
+    setTimeout(async () => {
+        await createPriceInfo(idCoinData);
+    }, 120000);
 }
 function createSpinnerForCollapse() {
     const spinnerDiv = document.createElement(`div`);
@@ -414,6 +379,7 @@ function resetSearch(arrayOfCoins) {
     resetBtn.addEventListener(`click`, () => handleresetSearch(arrayOfCoins, searchInput));
 }
 function handleresetSearch(arrayOfCoins, searchInput) {
+    const home = document.querySelector(`#home`);
     const cardRow = document.querySelector(`#card`);
     cardRow.innerHTML = ``;
     searchInput.value = ``;
@@ -454,3 +420,24 @@ function handleSaveChangesButton(arrayOfCoins, toggleInput) {
     localStorage.setItem("toggleInput", JSON.stringify(toggleInput));
     updateToggleStatesOnLoad(arrayOfCoins);
 }
+const liveReports = document.querySelector(`#liveReports`);
+const aboutDiv = document.querySelector(`#aboutDivt`);
+const home = document.querySelector(`#home`);
+const hideCoins = document.querySelector(`#hideCoins`);
+const hideChart = document.querySelector(`#hideChart`);
+const about = document.querySelector(`#about`);
+liveReports.addEventListener(`click`, function () {
+    hideCoins.setAttribute(`hidden`, `true`);
+    aboutDiv.setAttribute(`hidden`, `true`);
+    hideChart.removeAttribute(`hidden`);
+});
+home.addEventListener(`click`, function () {
+    hideCoins.removeAttribute(`hidden`);
+    hideChart.setAttribute(`hidden`, `true`);
+    aboutDiv.setAttribute(`hidden`, `true`);
+});
+about.addEventListener(`click`, function () {
+    aboutDiv.removeAttribute(`hidden`);
+    hideCoins.setAttribute(`hidden`, `true`);
+    hideChart.setAttribute(`hidden`, `true`);
+});

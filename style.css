@@ -1,0 +1,14 @@
+* {
+  box-sizing: border-box;
+}
+
+#chartContainer {
+  width: 100%;
+  height: 370px;
+}
+
+@media screen and (max-width: 600px) {
+  #chartContainer {
+    height: 200px;
+  }
+}

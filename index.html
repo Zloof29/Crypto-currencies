@@ -31,15 +31,15 @@
 
                     <div class="col-12 mt-3 mb-3">
                         <div class="d-flex justify-content-center justify-content-md-center">
-                            <a href="index.html" class="btn btn-primary me-2">Home</a>
-                            <a href="#" id="liveReports" class="btn btn-primary me-2">Live Reports</a>
-                            <a href="#" class="btn btn-primary me-2">About</a>
+                            <button id="home" class="btn btn-primary me-2">Home</button>
+                            <button id="liveReports" class="btn btn-primary me-2">Live Reports</button>
+                            <button id="about" class="btn btn-primary me-2">About</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="hideMe">
+            <div id="hideCoins">
             <div class="container">
                 <div class="row">
                     <div class="col-12 text-center">
@@ -66,7 +66,6 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body text-dark">
-                           
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -77,11 +76,31 @@
             </div>
         </div>
 
-            <div class="charts" id="chartContainer" style="height: 370px; width: 100%;" hidden></div>
+            <div id="hideChart" hidden="true">
+                <div id="chartContainer"></div>
+            </div>
+
+            <div id="aboutDivt" class="container-fluid" hidden="false">
+                <div class="row">
+                    <div class="col d-flex justify-content-center">
+                        <div class="card mb-3" style="width: 42rem;">
+                        <img src="https://scontent.ftlv5-1.fna.fbcdn.net/v/t39.30808-6/344542273_906395227135934_967224674736985302_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=5f2048&_nc_ohc=gJSMdNx5ej8Ab5Rybip&_nc_ht=scontent.ftlv5-1.fna&oh=00_AfCTWehdKrmDQQ6mHvGdauKbpInyBJ3XlMhRvyDFjNOK3A&oe=662EFBA8" class="card-img-top" alt="Lior Bas" />
+                        <div class="card-body">
+                            <h5 class="card-title">Lior Bas - student - full-stack developer</h5>
+                            <p class="card-text">Hey there! I'm Lior Bas, a passionate full-stack developer in the making. Currently, I'm on an exhilarating journey as a student, honing my skills and diving deep into the world of web development. I'm always open to new collaborations, exciting projects, and connecting with fellow developers and enthusiasts. Feel free to reach out I'd love to hear from you!</p>
+                            <h5 class="card-title">About the Project</h5>
+                            <p class="card-text">This project is a web application designed to provide users with real-time data visualization. It uses jQuery and CanvasJS for creating dynamic charts, and Bootstrap for responsive design. The goal of this project is to make data more accessible and understandable for users.</p>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <script src="dist/script.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script></body>
+            <script src="dist/liveReports.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
 
 </html>
